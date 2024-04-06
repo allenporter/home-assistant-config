@@ -3,11 +3,12 @@
 import datetime
 import pathlib
 import logging
+from typing import Any
 from unittest.mock import patch
-from freezegun import freeze_time
 
-import yaml
+from freezegun import freeze_time
 import pytest
+import yaml
 
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntryState
@@ -26,8 +27,8 @@ _LOGGER = logging.getLogger(__name__)
 WEATHER_FORECAST_YAML = pathlib.Path("config/templates/weather_forecast.yaml")
 
 
-@pytest.fixture(autouse=True)
-async def mock_demo(hass: HomeAssistant) -> MockConfigEntry:
+@pytest.fixture(name="weather")
+async def mock_weather_demo(hass: HomeAssistant) -> MockConfigEntry:
     config_entry = MockConfigEntry(domain="demo")
     config_entry.add_to_hass(hass)
     with patch(
@@ -39,7 +40,7 @@ async def mock_demo(hass: HomeAssistant) -> MockConfigEntry:
     return config_entry
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(name="template")
 async def mock_template(hass: HomeAssistant) -> None:
     with WEATHER_FORECAST_YAML.open("r") as fd:
         content = fd.read()
@@ -52,10 +53,13 @@ async def mock_template(hass: HomeAssistant) -> None:
 
 
 @pytest.mark.parametrize(("expected_lingering_timers"), [True])
-async def test_weather_summary(
+async def test_weather_forecast_template(
     hass: HomeAssistant,
+    weather: Any,
+    template: Any,
+    error_caplog: pytest.CaptureFixture,
 ) -> None:
-    """Collects model responses for area summaries."""
+    """Exercise the weather summary."""
     assert await async_setup_component(hass, "sun", {})
     await hass.async_block_till_done()
 
@@ -82,3 +86,5 @@ async def test_weather_summary(
 
     assert state.attributes.get("weather_temperature_3") == -31
     assert state.attributes.get("weather_timestamp_3") == "7 PM"
+
+    assert not error_caplog.records

@@ -7,6 +7,8 @@ repos:
       - id: check-yaml
         args:
           - --allow-multiple-documents
+        # Can't handle home assistant constructors
+        exclude: ^config/blueprints/automation/allenporter/notify_agent_agenda.yaml$
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/psf/black

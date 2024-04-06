@@ -1,0 +1,21 @@
+---
+- id: "1687836340268"
+  alias: Conversation agent Agenda Notification
+  description: ""
+  use_blueprint:
+    path: allenporter/notify_agent_agenda.yaml
+    input:
+      notify_service: notify.discord
+      calendar_entity: calendar.personal
+      weather_entity: weather.woodgreen
+      zone_entity: zone.home
+      conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42
+      prompt: "User: Allen
+
+        Please generate text for a notification that will be sent to the users smartphone.
+        Your messages help the user prepare for their day."
+      calendar_duration:
+        hours: 18
+        minutes: 0
+        seconds: 0
+      notify_target: "949910518347481158"

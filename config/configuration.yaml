@@ -1,3 +1,0 @@
-default_config:
-
-template: !include templates.yaml

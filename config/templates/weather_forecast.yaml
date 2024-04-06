@@ -1,0 +1,87 @@
+---
+- trigger:
+    platform: time_pattern
+    minutes: "/1"
+  action:
+    - variables:
+        weather_entity: weather.woodgreen
+    - service: weather.get_forecasts
+      data:
+        type: hourly
+      target:
+        entity_id:
+          - "{{ weather_entity }}"
+      response_variable: hourly
+    - variables:
+        hourly_entity: "{{ hourly[weather_entity] }}"
+        forecast0: "{{ hourly_entity.forecast[0] }}"
+        forecast1: "{{ hourly_entity.forecast[1] }}"
+        forecast2: "{{ hourly_entity.forecast[2] }}"
+        forecast3: "{{ hourly_entity.forecast[3] }}"
+        next_setting: "{{ as_timestamp(state_attr('sun.sun', 'next_setting')) }}"
+        next_rising: "{{ as_timestamp(state_attr('sun.sun', 'next_rising')) }}"
+
+  sensor:
+    - name: Woodgreen Forecast Display
+      state: "OK"
+      unique_id: dde03cac-a220-11ec-939f-055a07fcace4
+      attributes:
+        weather_condition_now: >
+          {% set cond_now = forecast0.condition %}
+          {% if states('sun.sun') == 'below_horizon' %}
+              {% if cond_now == 'sunny' %} night {% elif cond_now == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond_now }} {% endif %}
+          {% else %}
+              {{ cond_now }}
+          {% endif %}
+
+        weather_condition_0: >
+          {% set cond0 = forecast0.condition %}
+          {% set cond0_time = as_timestamp(forecast0.datetime) %}
+          {% if cond0_time < next_rising and next_rising < next_setting %}
+              {% if cond0 == 'sunny' %} night {% elif cond0 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond0 }} {% endif %}
+          {% else %}
+              {{ cond0 }}
+          {% endif %}
+        weather_temperature_0: >
+          {{ forecast0.temperature | round }}
+        weather_timestamp_0: >
+          {{ as_timestamp(forecast0.datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast0.datetime) | timestamp_custom('%p') }}
+
+        weather_condition_1: >
+          {% set cond1 = forecast1.condition %}
+          {% set cond1_time = as_timestamp(forecast1.datetime) %}
+          {% if cond1_time < next_rising and next_rising < next_setting %}
+              {% if cond1 == 'sunny' %} night {% elif cond1 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond1 }} {% endif %}
+          {% else %}
+              {{ cond1 }}
+          {% endif %}
+        weather_temperature_1: >
+          {{ forecast1.temperature | round }}
+        weather_timestamp_1: >
+          {{ as_timestamp(forecast1.datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast1.datetime) | timestamp_custom('%p') }}
+
+        weather_condition_2: >
+          {% set cond2 = forecast2.condition %}
+          {% set cond2_time = as_timestamp(forecast2.datetime) %}
+          {% if cond2_time < next_rising and next_rising < next_setting %}
+              {% if cond2 == 'sunny' %} night {% elif cond2 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond2 }} {% endif %}
+          {% else %}
+              {{ cond2 }}
+          {% endif %}
+        weather_temperature_2: >
+          {{ forecast2.temperature | round }}
+        weather_timestamp_2: >
+          {{ as_timestamp(forecast2.datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast2.datetime) | timestamp_custom('%p') }}
+
+        weather_condition_3: >
+          {% set cond3 = forecast3.condition %}
+          {% set cond3_time = as_timestamp(forecast3.datetime) %}
+          {% if cond3_time < next_rising and next_rising < next_setting %}
+              {% if cond3 == 'sunny' %} night {% elif cond3 == 'partlycloudy' %} night-partly-cloudy {% else %} {{ cond3 }} {% endif %}
+          {% else %}
+              {{ cond3 }}
+          {% endif %}
+        weather_temperature_3: >
+          {{ forecast3.temperature | round }}
+        weather_timestamp_3: >
+          {{ as_timestamp(forecast3.datetime) | timestamp_custom('%I') | int }} {{ as_timestamp(forecast3.datetime) | timestamp_custom('%p') }}

@@ -1,0 +1,35 @@
+alarm_control_panel:
+  - platform: manual
+    name: Home Alarm
+    code: !secret alarm_code
+    code_arm_required: false
+    arming_time: 30
+    delay_time: 30
+    trigger_time: 600 # 10 minutes
+    armed_home:
+      arming_time: 0
+      delay_time: 30
+
+  # An alarm control panel that allows disaring without entering a code.
+  - platform: template
+    panels:
+      safe_alarm:
+        unique_id: 384050f4-26c6-11ef-8666-0ec32ec738c5
+        name: Safe Alarm
+        code_arm_required: false
+        code_format: no_code
+        value_template: "{{ states('alarm_control_panel.home_alarm') }}"
+        arm_away:
+          service: alarm_control_panel.alarm_arm_away
+          target:
+            entity_id: alarm_control_panel.home_alarm
+        arm_home:
+          service: alarm_control_panel.alarm_arm_home
+          target:
+            entity_id: alarm_control_panel.home_alarm
+        disarm:
+          - service: alarm_control_panel.alarm_disarm
+            target:
+              entity_id: alarm_control_panel.home_alarm
+            data:
+              code: !secret alarm_code

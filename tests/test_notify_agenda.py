@@ -4,14 +4,13 @@ import datetime
 import pathlib
 import logging
 from typing import Any
-from collections.abc import Mapping
 from unittest.mock import patch
 
 import pytest
 from freezegun import freeze_time
 import yaml
 
-from homeassistant.core import HomeAssistant, Event, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.setup import async_setup_component
 from homeassistant.const import Platform
@@ -19,7 +18,6 @@ from homeassistant.const import Platform
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_fire_time_changed,
-    async_capture_events,
     async_mock_service,
 )
 

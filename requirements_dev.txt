@@ -2,10 +2,12 @@ PyYAML==6.0.1
 mashumaro==3.12
 mypy==1.9.0
 pre-commit==3.6.2
-pytest-asyncio==0.23.6
-pytest-homeassistant-custom-component==0.13.111
 ruff==0.3.3
-syrupy==4.6.1
+pytest-homeassistant-custom-component==0.13.111
+
+# Don't hard pin dependencies of pytest-homeassistant-custom-component
+pytest-asyncio>=0.23.6
+syrupy>=4.6.1
 
 # Component dependencies
 ical>=7.0.3

@@ -26,17 +26,3 @@ jobs:
         with:
           check_hidden: false
           ignore_words_list: hass
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: "pip"
-          cache-dependency-path: "**/requirements_dev.txt"
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements_dev.txt
-      - name: Static typing with mypy
-        run: |
-          mkdir .mypy_cache  # https://github.com/python/mypy/issues/10768
-          mypy --install-types --non-interactive --no-warn-unused-ignores custom_components

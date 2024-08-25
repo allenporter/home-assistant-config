@@ -16,3 +16,4 @@ hassil>=1.7.0
 home-assistant-intents>=2024.4.3
 pymicro_vad>=1.0.2
 mutagen>=1.47.0
+ha-ffmpeg>=3.2.0

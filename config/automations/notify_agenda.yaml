@@ -6,6 +6,7 @@
     path: allenporter/notify_agent_agenda.yaml
     input:
       notify_service: notify.discord
+      notify_target:
       calendar_entity: calendar.personal
       weather_entity: weather.woodgreen
       zone_entity: zone.home

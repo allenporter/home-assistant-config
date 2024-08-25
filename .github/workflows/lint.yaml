@@ -38,4 +38,5 @@ jobs:
           pip install -r requirements_dev.txt
       - name: Static typing with mypy
         run: |
+          mkdir .mypy_cache  # https://github.com/python/mypy/issues/10768
           mypy --install-types --non-interactive --no-warn-unused-ignores custom_components

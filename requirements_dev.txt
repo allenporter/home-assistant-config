@@ -1,4 +1,4 @@
-PyYAML==6.0.1
+PyYAML==6.0.2
 mashumaro==3.12
 mypy==1.9.0
 pre-commit==3.6.2

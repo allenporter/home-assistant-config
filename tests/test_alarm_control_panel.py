@@ -48,6 +48,8 @@ async def test_manual_alarm_control_panel(
         "code_arm_required": False,
         "code_format": "number",
         "supported_features": 63,
+        "next_state": None,
+        "previous_state": None,
     }
 
     await hass.services.async_call(

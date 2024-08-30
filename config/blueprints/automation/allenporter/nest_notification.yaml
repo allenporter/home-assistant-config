@@ -1,0 +1,114 @@
+---
+blueprint:
+  name: Nest Media Notification
+  description:
+    Nest Media Notification blueprint that uses an event entity for rapid notification
+    that is also updatable with media.
+  domain: automation
+  input:
+    nest_event_entity:
+      name: Nest Event Entity
+      description: The nest event entity to use for triggering events.
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - integration: nest
+              domain:
+                - event
+    nest_device:
+      name: Nest Device
+      description: The nest device associated with the specified entity.
+      selector:
+        device:
+          multiple: false
+          entity:
+            - integration: nest
+              domain:
+                - event
+    nest_event_type:
+      name: Event Type
+      description: The type of event to match for the event entity and media.
+      selector:
+        select:
+          options:
+            - value: doorbell_chime
+              label: Doorbell Chime
+            - value: camera_motion
+              label: Camera Motion
+            - value: camera_person
+              label: Camera Person
+            - value: camera_sound
+              label: Camera Sound
+          translation_key: nest::device_automation::trigger_type
+    notify_device:
+      name: Device to notify
+      description: Device that runs the Home Assistat application used to receive notifications
+      selector:
+        device:
+          integration: mobile_app
+    title:
+      name: Title
+      description: The title of the button shown in the notification.
+      selector:
+        text:
+    message:
+      name: Message
+      description: The message body
+      selector:
+        text:
+mode: queued
+trigger:
+  - platform: state
+    entity_id: !input nest_event_entity
+    id: nest-event-entity
+  - platform: device
+    device_id: !input nest_device
+    domain: nest
+    type: !input nest_event_type
+    id: nest-media-event
+action:
+  - variables:
+      entity_id: !input nest_event_entity
+      device_id: !input nest_device
+      # Default to the camera or fallback to the event entity itself
+      view_entity_id: "{{ device_entities(device_id) | select('match', 'camera') | first | default(entity_id) }}"
+      notify_data:
+        group: "{{ entity_id }}"
+        actions:
+          - action: "URI"
+            title: "View"
+            uri: "entityId:{{ view_entity_id }}"
+          - action: "URI"
+            title: "Notification History"
+            uri: "settings://notification_history"
+
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - nest-event-entity
+        sequence:
+          - variables:
+              nest_event_id: "{{ trigger.to_state.attributes.nest_event_id  }}"
+          - alias: Send notification
+            domain: mobile_app
+            type: notify
+            device_id: !input notify_device
+            title: !input title
+            message: !input message
+            data: "{{ dict(notify_data, tag=nest_event_id) }}"
+      - conditions:
+          - condition: trigger
+            id:
+              - nest-media-event
+        sequence:
+          - variables:
+              nest_event_id: "{{ trigger.event.data.nest_event_id }}"
+          - alias: Send notification
+            domain: mobile_app
+            type: notify
+            device_id: !input notify_device
+            title: !input title
+            message: !input message
+            data: "{{ dict(notify_data, tag=nest_event_id, **trigger.event.data.attachment) }}"

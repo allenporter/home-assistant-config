@@ -1,4 +1,4 @@
-"""Tests for the weather forecast templates."""
+"""Tests for the conversation agent agenda notifications."""
 
 import datetime
 import pathlib
@@ -28,6 +28,7 @@ _LOGGER = logging.getLogger(__name__)
 AUTOMATION_YAML = pathlib.Path("config/automations/notify_agenda.yaml")
 NOTIFY_ENTITY = "notify.notifier"
 WEATHER_ENTITY = "weather.demo_weather_north"
+
 
 @pytest.fixture(autouse=True)
 async def mock_default_components(hass: HomeAssistant) -> None:
@@ -95,8 +96,13 @@ async def mock_template(
             "conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42",
             "conversation_agent: homeassistant",
         )
-        content = content.replace("notify_service: notify.discord", "notify_service: notify.persistent_notification")
-        content = content.replace("notify_target: notify.discord", "notify_target: notify.notifier")
+        content = content.replace(
+            "notify_service: notify.discord",
+            "notify_service: notify.persistent_notification",
+        )
+        content = content.replace(
+            "notify_target: notify.discord", "notify_target: notify.notifier"
+        )
         print(content)
         config = yaml.load(content, Loader=yaml.Loader)
 

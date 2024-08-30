@@ -1,0 +1,13 @@
+---
+- id: "17245268189580967"
+  alias: Nest Doorbell Mobile Notification
+  description: Notify my phone when the doorbell is pressed.
+  use_blueprint:
+    path: allenporter/nest_notification.yaml
+    input:
+      nest_event_entity: NEST_EVENT_ENTITY_ID
+      nest_event_type: doorbell_chime
+      nest_device: NEST_DEVICE_ID
+      notify_device: MOBILE_APP_DEVICE_ID
+      title: Doorbell
+      message: Someone pressed the doorbell

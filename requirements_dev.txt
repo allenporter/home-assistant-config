@@ -1,7 +1,7 @@
 mashumaro==3.13.1
 mypy==1.11.2
 pre-commit==4.0.1
-ruff==0.6.9
+ruff==0.7.0
 pytest-homeassistant-custom-component==0.13.173
 
 # Don't hard pin dependencies of pytest-homeassistant-custom-component

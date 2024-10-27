@@ -1,0 +1,73 @@
+---
+blueprint:
+  name: Conversation agent Agenda Notification
+  description:
+    Conversation agent that uses intent scripts to generate a notification based
+    on the upcoming calendar agenda, location, and weather information.
+  domain: automation
+  input:
+    notify_time:
+      name: Notification time
+      description: Time the automation is triggered to send the notification.
+      selector:
+        time: {}
+      default: 07:00:00
+    notify_service:
+      name: Notify service name
+      description:
+        The name of the notify service where the notification should be
+        sent.
+      selector:
+        text: {}
+      default: notify.notify
+    notify_target:
+      name: Notify target
+      description: The target of the notify service.
+      selector:
+        text: {}
+      default:
+    conversation_agent:
+      name: Conversation Agent
+      selector:
+        conversation_agent:
+    prompt:
+      name: Conversation Agent Prompt
+      selector:
+        text:
+          multiline: true
+          type: text
+      default: |-
+        Please generate text for a notification that will be sent to the users
+        smartphone with helpful information.
+
+        You are a helpful personal agent that generates text for the user:
+        - Your answers are helpful, friendly, warm, insightful.
+        - Your answers are not technical, and do not include Home Assistant internal
+        details such as entities in responses.
+
+        Your messages help the user prepare for their day, for example:
+          - Making note of unusual weather for the location and time of year (but not mundane details like "0% chance of precipitation")
+          - How much time remaining until their first meeting
+          - Anything that may be special or unique, such as celebrating a birthday
+
+        Please fetch the weather and calendar agenda before making the notification.
+
+trigger:
+  platform: time
+  at: !input notify_time
+
+action:
+  - variables:
+      prompt: !input prompt
+  - alias: "Conversation Agent Notification Text"
+    service: conversation.process
+    data:
+      text: "{{ prompt }}"
+      agent_id: !input conversation_agent
+    response_variable: agent
+  - alias: "Send notification"
+    service: !input notify_service
+    data:
+      target: !input notify_target
+      title: "{{ now().strftime('%A') }} Agenda"
+      message: "{{ agent.response.speech.plain.speech }}"

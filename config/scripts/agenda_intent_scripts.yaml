@@ -1,0 +1,51 @@
+GetWeatherForecast:
+  description: Return the current weather forecast
+  action:
+    - action: weather.get_forecasts
+      target:
+        entity_id: weather.woodgreen
+      data:
+        type: hourly
+      response_variable: daily_forecast
+    - variables:
+        forecast_entity: "{{ daily_forecast['weather.woodgreen'] }}"
+        forecast: "{{ forecast_entity.forecast[0] }}"
+    - stop: ""
+      response_variable: forecast # ['weather.woodgreen']  # and return it
+  speech:
+    text: |-
+      {%- set temperature_unit = state_attr('weather.woodgreen', 'temperature_unit') -%}
+      {{ action_response.condition }} ({{ action_response.temperature }}{{ temperature_unit }}, {{ action_response.precipitation }}% precipitation)
+GetTodaysAgenda:
+  description: Get calendar events for the users personal calendar for the next 18 hours
+  action:
+    - action: calendar.get_events
+      target:
+        entity_id: calendar.personal
+      data_template:
+        duration: { "hours": 18 }
+      response_variable: result # get action response
+    - stop: ""
+      response_variable: result # and return it
+  speech:
+    text: |
+      {%- set agenda = (action_response | items | first)[1] -%}
+      {%- if agenda.events %}
+        {% for event in agenda.events %}
+        {%- set delta = (event.start|as_datetime) - now() -%}
+        {%- set hours = int(delta.seconds / (60*60)) -%}
+        {%- set minutes = int((delta.seconds % (60*60))/60) -%}
+        {%- set duration = (event.end|as_datetime) - (event.start|as_datetime) -%}
+        Summary: {{ event.summary }}
+        Starts in: {{ hours }} hours, {{ minutes }} minutes, lasts {{ duration }} (h:mm:ss).
+        {%- if event.description is defined and event.description %}
+        Description: {{ event.description }}
+        {%- endif %}
+        {%- if event.location is defined %}
+        Location: {{ event.location }}
+        {%- endif %}
+
+        {% endfor %}
+      {%- else %}
+        - No upcoming events.
+      {%- endif %}

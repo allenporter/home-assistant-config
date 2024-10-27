@@ -1,6 +1,6 @@
 ---
 blueprint:
-  name: Conversation agent Agenda Notification
+  name: Conversation Agent Notification
   description:
     Conversation agent that uses intent scripts to generate a notification based
     on the upcoming calendar agenda, location, and weather information.

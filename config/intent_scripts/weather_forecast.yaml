@@ -1,0 +1,18 @@
+GetWeatherForecast:
+  description: Return the current weather forecast
+  action:
+    - action: weather.get_forecasts
+      target:
+        entity_id: weather.woodgreen
+      data:
+        type: hourly
+      response_variable: daily_forecast
+    - variables:
+        forecast_entity: "{{ daily_forecast['weather.woodgreen'] }}"
+        forecast: "{{ forecast_entity.forecast[0] }}"
+    - stop: ""
+      response_variable: forecast # ['weather.woodgreen']  # and return it
+  speech:
+    text: |-
+      {%- set temperature_unit = state_attr('weather.woodgreen', 'temperature_unit') -%}
+      {{ action_response.condition }} ({{ action_response.temperature }}{{ temperature_unit }}, {{ action_response.precipitation }}% precipitation)

@@ -13,7 +13,6 @@ import yaml
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.setup import async_setup_component
-from homeassistant.const import Platform
 from homeassistant.helpers import intent
 from homeassistant.util import dt as dt_util
 from homeassistant.components.local_calendar.store import LocalCalendarStore
@@ -26,21 +25,8 @@ from pytest_homeassistant_custom_component.common import (
 _LOGGER = logging.getLogger(__name__)
 
 
-SCRIPT_YAML = pathlib.Path("config/scripts/agenda_intent_scripts.yaml")
+SCRIPT_YAML = pathlib.Path("config/intent_scripts/todays_agenda.yaml")
 CALENDAR_ENTITY = "calendar.personal"
-
-
-@pytest.fixture(name="weather")
-async def mock_weather_demo(hass: HomeAssistant) -> MockConfigEntry:
-    config_entry = MockConfigEntry(domain="demo")
-    config_entry.add_to_hass(hass)
-    with patch(
-        "homeassistant.components.demo.COMPONENTS_WITH_CONFIG_ENTRY_DEMO_PLATFORM",
-        [Platform.WEATHER],
-    ):
-        await hass.config_entries.async_setup(config_entry.entry_id)
-    assert config_entry.state == ConfigEntryState.LOADED
-    return config_entry
 
 
 class FakeStore(LocalCalendarStore):
@@ -96,23 +82,11 @@ async def mock_demo(hass: HomeAssistant) -> MockConfigEntry:
 async def mock_script(hass: HomeAssistant) -> None:
     with SCRIPT_YAML.open("r") as fd:
         content = fd.read()
-        content = content.replace("weather.woodgreen", "weather.demo_weather_north")
         config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "intent_script", {"intent_script": config})
     await hass.async_block_till_done()
     await hass.async_block_till_done()
-
-
-async def test_get_weather_forecast(
-    hass: HomeAssistant,
-    weather: Any,
-    script: Any,
-    error_caplog: pytest.CaptureFixture,
-) -> None:
-    """Exercise the weather summary."""
-    response = await intent.async_handle(hass, "test", "GetWeatherForecast", {})
-    assert response.speech["plain"]["speech"] == "sunny (-23.3°C, 2.0% precipitation)"
 
 
 async def test_empty_calendar_agenda(

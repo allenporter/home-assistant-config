@@ -25,4 +25,6 @@ jobs:
       - uses: codespell-project/actions-codespell@v2.1
         with:
           check_hidden: false
-          ignore_words_list: hass
+          ignore_words_list:
+            - hass
+            - iff

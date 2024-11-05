@@ -87,6 +87,7 @@ MOBILE_APP_CONFIG_ENTRY_DATA = {
     "os_version": "",
 }
 
+
 @pytest.fixture(autouse=True)
 def cleanup_media_storage(hass: HomeAssistant) -> Generator[None]:
     """Test cleanup, remove any media storage persisted during the test."""
@@ -94,6 +95,7 @@ def cleanup_media_storage(hass: HomeAssistant) -> Generator[None]:
     with patch("homeassistant.components.nest.media_source.MEDIA_PATH", new=tmp_path):
         yield
         shutil.rmtree(hass.config.path(tmp_path), ignore_errors=True)
+
 
 class FakeSubscriber(GoogleNestSubscriber):
     """Fake subscriber that supplies a FakeDeviceManager."""

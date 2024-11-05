@@ -94,7 +94,9 @@ async def test_notify_agenda(
 ) -> None:
     """Collects model responses for area summaries."""
 
-    state = hass.states.get("automation.conversation_agent_intent_based_agenda_notification")
+    state = hass.states.get(
+        "automation.conversation_agent_intent_based_agenda_notification"
+    )
     assert state
     assert state.state == "on"
 

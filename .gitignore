@@ -1,6 +1,7 @@
 *.pyc
 venv
 *.egg-info
+__pycache__
 
 **/secrets.yaml
 deps

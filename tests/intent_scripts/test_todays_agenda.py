@@ -153,3 +153,38 @@ async def test_upcoming_events(
   Starts in: 1 hours, 59 minutes, lasts 0:15:00 (h:mm:ss).
   Description: Test description"""
     )
+
+
+
+async def test_event_starting_now(
+    hass: HomeAssistant,
+    calendar: Any,
+    script: Any,
+    error_caplog: pytest.CaptureFixture,
+) -> None:
+    """Test an event that starts at the same time as the script is run."""
+
+    start_time = dt_util.now() - datetime.timedelta(seconds=1)
+    end_time = start_time + datetime.timedelta(minutes=30)
+
+    await hass.services.async_call(
+        "calendar",
+        "create_event",
+        {
+            "start_date_time": start_time.isoformat(),
+            "end_date_time": end_time.isoformat(),
+            "summary": "Bastille Day Party",
+            "location": "Test Location",
+        },
+        target={"entity_id": CALENDAR_ENTITY},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    response = await intent.async_handle(hass, "test", "GetTodaysAgenda", {})
+    assert (
+        response.speech["plain"]["speech"]
+        == """Summary: Bastille Day Party
+  Starts in: 0 hours, 0 minutes, lasts 0:30:00 (h:mm:ss).
+  Location: Test Location"""
+    )

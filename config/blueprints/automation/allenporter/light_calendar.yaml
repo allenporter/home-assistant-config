@@ -1,0 +1,35 @@
+blueprint:
+  name: Evening Light Calendar
+  description: Use a calendar for managing a light schedule.  Lights are turned on according the calendar schedule, and only after dark.
+  domain: automation
+  input:
+    calendar_sensor:
+      name: Calendar Sensor
+      selector:
+        entity:
+          domain:
+          - calendar
+          - binary_sensor
+    target_light:
+      name: Light
+      selector:
+        target:
+          entity:
+            domain: light
+
+variables:
+  cal_switch: !input calendar_sensor
+
+trigger:
+- platform: state
+  entity_id: !input calendar_sensor
+- platform: sun
+  event: sunset
+
+condition:
+- after: sunset
+  condition: sun
+
+action:
+  service: "{{ iif(is_state(cal_switch, 'on'), 'light.turn_on', 'light.turn_off') }}"
+  target: !input target_light

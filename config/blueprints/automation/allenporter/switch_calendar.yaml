@@ -1,0 +1,29 @@
+blueprint:
+  name: Switch on Calendar
+  description: Use a calendar for managing a switch schedule.  Switch is turned on according the calendar schedule.
+  domain: automation
+  input:
+    calendar_sensor:
+      name: Calendar Sensor
+      selector:
+        entity:
+          domain:
+          - calendar
+          - binary_sensor
+    target_switch:
+      name: Switch
+      selector:
+        target:
+          entity:
+            domain: switch
+
+variables:
+  cal_switch: !input calendar_sensor
+
+trigger:
+- platform: state
+  entity_id: !input calendar_sensor
+
+action:
+  service: "{{ iif(is_state(cal_switch, 'on'), 'switch.turn_on', 'switch.turn_off') }}"
+  target: !input target_switch

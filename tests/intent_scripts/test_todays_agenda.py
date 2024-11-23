@@ -164,9 +164,22 @@ async def test_event_starting_now(
 ) -> None:
     """Test an event that starts at the same time as the script is run."""
 
+    today = dt_util.now().date()
     start_time = dt_util.now() - datetime.timedelta(seconds=1)
     end_time = start_time + datetime.timedelta(minutes=30)
 
+    await hass.services.async_call(
+        "calendar",
+        "create_event",
+        {
+            "start_date": today.isoformat(),
+            "end_date": (today + datetime.timedelta(days=1)).isoformat(),
+            "summary": "Bastille Day",
+        },
+        target={"entity_id": CALENDAR_ENTITY},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
     await hass.services.async_call(
         "calendar",
         "create_event",
@@ -184,7 +197,10 @@ async def test_event_starting_now(
     response = await intent.async_handle(hass, "test", "GetTodaysAgenda", {})
     assert (
         response.speech["plain"]["speech"]
-        == """Summary: Bastille Day Party
+        == """Summary: Bastille Day
+  Starts in: 0 hours, 0 minutes, lasts 1 day, 0:00:00 (h:mm:ss).
+
+  Summary: Bastille Day Party
   Starts in: 0 hours, 0 minutes, lasts 0:30:00 (h:mm:ss).
   Location: Test Location"""
     )

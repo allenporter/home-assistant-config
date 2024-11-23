@@ -14,7 +14,7 @@ GetTodaysAgenda:
       {%- set agenda = (action_response | items | first)[1] -%}
       {%- if agenda.events %}
         {% for event in agenda.events %}
-        {%- set delta = ((event.start|as_datetime) - now(), timedelta(minutes=0)) | max -%}
+        {%- set delta = ((event.start|as_datetime|as_local) - now(), timedelta(minutes=0)) | max -%}
         {%- set hours = int(delta.seconds / (60*60)) -%}
         {%- set minutes = int((delta.seconds % (60*60))/60) -%}
         {%- set duration = (event.end|as_datetime) - (event.start|as_datetime) -%}

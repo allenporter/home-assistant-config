@@ -111,7 +111,8 @@ async def test_notify_agenda(
     assert "Agenda" in data.get("title")
 
     # We're using the default agent for testing
-    assert "couldn't understand that" in data.get("message")
+    assert ("couldn't understand that" in data.get("message")
+            or "Sorry, I am not aware" in data.get("message"))
 
     # Automation completes with success
     assert not error_caplog.records

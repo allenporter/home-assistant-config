@@ -2,7 +2,7 @@ mashumaro==3.15
 mypy==1.14.1
 pre-commit==4.1.0
 ruff==0.9.3
-pytest-homeassistant-custom-component==0.13.204
+pytest-homeassistant-custom-component==0.13.205
 
 # Don't hard pin dependencies of pytest-homeassistant-custom-component
 pytest-asyncio>=0.23.6

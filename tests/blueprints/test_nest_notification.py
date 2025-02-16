@@ -62,6 +62,10 @@ NEST_CONFIG_ENTRY_DATA = {
     "cloud_project_id": "b",
     "subscriber_id": "c",
     "auth_implementation": "imported-cred",
+    "token": {
+        "access_token": "some-token",
+        "expires_at": (datetime.datetime.now() + datetime.timedelta(days=7)).timestamp()
+    }
 }
 EVENT_SESSION_ID = "CjY5Y3VKaTZwR3o4Y19YbTVfMF..."
 EVENT_ID = "FWWVQVUdGNUlTU2V4MGV2aTNXV..."

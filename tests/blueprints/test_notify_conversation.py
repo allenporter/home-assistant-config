@@ -62,7 +62,7 @@ async def mock_template(
         content = fd.read()
         content = content.replace(
             "conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42",
-            "conversation_agent: homeassistant",
+            "conversation_agent: conversation.home_assistant",
         )
         content = content.replace(
             "notify_service: notify.discord",

@@ -9,7 +9,7 @@ import datetime
 import copy
 import re
 from typing import Any
-from collections.abc import Mapping, Awaitable, Callable, Generator
+from collections.abc import Mapping, Generator
 from unittest.mock import patch, AsyncMock
 
 import pytest
@@ -17,13 +17,8 @@ import yaml
 import aiohttp
 from yarl import URL
 
-from google_nest_sdm.auth import AbstractAuth
-from google_nest_sdm.device import Device
-from google_nest_sdm.device_manager import DeviceManager
-from google_nest_sdm.event import EventMessage, EventType
-from google_nest_sdm.event_media import CachePolicy
+from google_nest_sdm.event import EventType
 from google_nest_sdm.traits import TraitType
-from google_nest_sdm.google_nest_subscriber import GoogleNestSubscriber
 from google_nest_sdm.streaming_manager import StreamingManager, Message
 
 from homeassistant.core import HomeAssistant, Event, ServiceCall
@@ -37,7 +32,10 @@ from homeassistant.components.nest.const import API_URL
 from homeassistant.util.dt import utcnow
 from homeassistant.helpers import device_registry as dr
 
-from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker, AiohttpClientMockResponse
+from pytest_homeassistant_custom_component.test_util.aiohttp import (
+    AiohttpClientMocker,
+    AiohttpClientMockResponse,
+)
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_mock_service,
@@ -70,8 +68,10 @@ NEST_CONFIG_ENTRY_DATA = {
     "auth_implementation": "imported-cred",
     "token": {
         "access_token": "some-token",
-        "expires_at": (datetime.datetime.now() + datetime.timedelta(days=7)).timestamp()
-    }
+        "expires_at": (
+            datetime.datetime.now() + datetime.timedelta(days=7)
+        ).timestamp(),
+    },
 }
 DEVICE_URL_MATCH = re.compile(
     f"{API_URL}/enterprises/project-id/devices/[^:]+:executeCommand"
@@ -131,7 +131,6 @@ class CreateDevice:
         data.update(raw_data if raw_data else {})
         data["traits"].update(raw_traits if raw_traits else {})
         self.devices.append(data)
-
 
 
 @pytest.fixture
@@ -310,7 +309,9 @@ async def mock_default_components(hass: HomeAssistant) -> None:
 
 @pytest.fixture(name="nest")
 async def mock_nest(
-    hass: HomeAssistant, create_device: CreateDevice, auth: FakeAuth,
+    hass: HomeAssistant,
+    create_device: CreateDevice,
+    auth: FakeAuth,
 ) -> MockConfigEntry:
     create_device.create(raw_data=NEST_DERVICE_TRAITS)
 
@@ -435,7 +436,7 @@ async def test_nest_notification(
 
     expected_mock_calls += 1
     assert aioclient_mock.call_count == expected_mock_calls
-    data = aioclient_mock.mock_calls[expected_mock_calls-1][2]["data"]
+    data = aioclient_mock.mock_calls[expected_mock_calls - 1][2]["data"]
     assert data["group"] == "event.front_door_chime"
     assert data["tag"] == ENCODED_EVENT_ID
     assert "video" not in data
@@ -473,7 +474,7 @@ async def test_nest_notification(
 
     expected_mock_calls += 2
     assert aioclient_mock.call_count == expected_mock_calls
-    data = aioclient_mock.mock_calls[expected_mock_calls-1][2]["data"]
+    data = aioclient_mock.mock_calls[expected_mock_calls - 1][2]["data"]
     assert data["group"] == "event.front_door_chime"
     assert data["tag"] == ENCODED_EVENT_ID
     assert data["image"]

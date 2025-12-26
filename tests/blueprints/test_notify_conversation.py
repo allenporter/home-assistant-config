@@ -62,7 +62,7 @@ async def mock_template(
         content = fd.read()
         content = content.replace(
             "conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42",
-            "conversation_agent: homeassistant",
+            "conversation_agent: conversation.home_assistant",
         )
         content = content.replace(
             "notify_service: notify.discord",
@@ -111,8 +111,9 @@ async def test_notify_agenda(
     assert "Agenda" in data.get("title")
 
     # We're using the default agent for testing
-    assert ("couldn't understand that" in data.get("message")
-            or "Sorry, I am not aware" in data.get("message"))
+    assert "couldn't understand that" in data.get(
+        "message"
+    ) or "Sorry, I am not aware" in data.get("message")
 
     # Automation completes with success
     assert not error_caplog.records

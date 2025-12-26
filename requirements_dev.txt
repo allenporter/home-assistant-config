@@ -2,7 +2,7 @@ mashumaro==3.17
 mypy==1.18.2
 pre-commit==4.4.0
 ruff==0.14.5
-pytest-homeassistant-custom-component==0.13.254
+pytest-homeassistant-custom-component==0.13.301
 
 # Don't hard pin dependencies of pytest-homeassistant-custom-component
 pytest-asyncio>=0.23.6
@@ -12,12 +12,12 @@ PyYAML>=6.0.1
 # Component dependencies
 ical>=7.0.3
 openai>=1.16.2
-hassil>=2.0.4
-home-assistant-intents>=2024.4.3
+hassil>=3.5.0
+home-assistant-intents>=2025.12.2
 pymicro_vad>=1.0.1
 mutagen>=1.47.0
 ha-ffmpeg>=3.2.0
 pyspeex_noise>=1.0.2
-google_nest_sdm>=6.0.0
+google_nest_sdm>=9.1.2
 PyNaCl>=1.5.0
 PyTurboJPEG>=1.7.5

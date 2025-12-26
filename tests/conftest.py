@@ -14,6 +14,10 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_DIR = pathlib.Path(__file__).parent.parent / "config"
 
+pytest_plugins = [
+    "tests.fixtures.local_calendar_fixture",
+]
+
 
 @pytest.fixture(autouse=True)
 def mock_config_dir() -> None:

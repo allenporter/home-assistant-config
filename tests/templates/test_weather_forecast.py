@@ -66,7 +66,6 @@ async def test_weather_forecast_template(
     # Advance past the trigger time
     next = datetime.datetime.now() + datetime.timedelta(hours=1)
     with freeze_time(next):
-
         async_fire_time_changed(hass, next)
         await hass.async_block_till_done()
 

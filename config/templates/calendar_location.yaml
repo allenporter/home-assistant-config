@@ -1,0 +1,39 @@
+- trigger:
+    - platform: homeassistant
+      event: start
+    - platform: time_pattern
+      hours: "/6"
+  action:
+    - service: calendar.get_events
+      target:
+        entity_id: calendar.personal
+      data:
+        duration:
+          hours: 168
+          minutes: 0
+          seconds: 0
+      response_variable: agenda
+    - alias: Find upcoming events with locations
+      variables:
+        upcoming: "{{ agenda['calendar.personal'].events | rejectattr('location', 'undefined') | list }}"
+  sensor:
+    - name: Next Location
+      state: >
+        {% if upcoming|length > 0 %}
+          {{ upcoming[0].location }}
+        {% endif %}
+      unique_id: "7e6f2abd-f09c-12ed-bbb2-066a07ffbaf6"
+    - name: Next Location Summary
+      state: >
+        {% if upcoming|length > 0 %}
+          {{ upcoming[0].summary }}
+        {% endif %}
+      unique_id: "8e6f2abd-f09c-12ed-bbb2-066a07ffbaf7"
+    - name: Next Location Start
+      state: >
+        {% if upcoming|length > 0 %}
+          {{ upcoming[0].start }}
+        {% endif %}
+      device_class: timestamp
+      unique_id: "9e6f2abd-f09c-12ed-bbb2-066a07ffbaf8"
+  unique_id: "07dd6833-f10c-11ec-9aad-066a07ffbaf6"

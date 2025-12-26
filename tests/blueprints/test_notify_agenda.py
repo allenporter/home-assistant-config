@@ -37,17 +37,6 @@ async def mock_default_components(hass: HomeAssistant) -> None:
     assert await async_setup_component(hass, "conversation", {})
 
 
-@pytest.fixture(name="calendar")
-async def mock_demo(hass: HomeAssistant) -> MockConfigEntry:
-    config_entry = MockConfigEntry(
-        domain="local_calendar", data={"calendar_name": "personal"}
-    )
-    config_entry.add_to_hass(hass)
-    await hass.config_entries.async_setup(config_entry.entry_id)
-    assert config_entry.state == ConfigEntryState.LOADED
-    return config_entry
-
-
 @pytest.fixture(name="weather")
 async def mock_weather_demo(hass: HomeAssistant) -> MockConfigEntry:
     config_entry = MockConfigEntry(domain="demo")
@@ -85,7 +74,6 @@ async def mock_notify(hass: HomeAssistant) -> MockConfigEntry:
 @pytest.fixture(name="template")
 async def mock_template(
     hass: HomeAssistant,
-    calendar: Any,
     weather: Any,
     notify: Any,
 ) -> None:
@@ -121,6 +109,7 @@ def notify_service_calls(hass: HomeAssistant) -> list[ServiceCall]:
 async def test_notify_agenda(
     hass: HomeAssistant,
     template: Any,
+    calendar: Any,
     error_caplog: pytest.LogCaptureFixture,
     notify_service_calls: list[ServiceCall],
 ) -> None:
@@ -141,8 +130,9 @@ async def test_notify_agenda(
     assert "Agenda" in data.get("title")
 
     # We're using the default agent for testing
-    assert ("couldn't understand that" in data.get("message")
-            or "Sorry, I am not aware" in data.get("message"))
+    assert "couldn't understand that" in data.get(
+        "message"
+    ) or "Sorry, I am not aware" in data.get("message")
 
     # Automation completes with success
     assert not error_caplog.records

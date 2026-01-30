@@ -1,4 +1,4 @@
-mashumaro==3.17
+mashumaro==3.18
 mypy==1.19.1
 pre-commit==4.5.1
 ruff==0.14.14

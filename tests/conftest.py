@@ -24,6 +24,9 @@ def mock_config_dir() -> None:
     with patch(
         "pytest_homeassistant_custom_component.common.get_test_config_dir",
         return_value=CONFIG_DIR,
+    ), patch(
+        "pytest_homeassistant_custom_component.plugins.get_test_config_dir",
+        return_value=CONFIG_DIR,
     ):
         yield
 

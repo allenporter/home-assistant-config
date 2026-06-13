@@ -1,0 +1,20 @@
+- alarm_control_panel:
+    - name: Safe Alarm
+      unique_id: 384050f4-26c6-11ef-8666-0ec32ec738c5
+      state: "{{ states('alarm_control_panel.home_alarm') }}"
+      code_arm_required: false
+      code_format: no_code
+      arm_away:
+        action: alarm_control_panel.alarm_arm_away
+        target:
+          entity_id: alarm_control_panel.home_alarm
+      arm_home:
+        action: alarm_control_panel.alarm_arm_home
+        target:
+          entity_id: alarm_control_panel.home_alarm
+      disarm:
+        - action: alarm_control_panel.alarm_disarm
+          target:
+            entity_id: alarm_control_panel.home_alarm
+          data:
+            code: !secret alarm_code

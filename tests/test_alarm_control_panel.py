@@ -17,6 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 SECRET_CODE = "1234"
 
 ALARM_CONTROL_PANEL_YAML = pathlib.Path("config/alarm_control_panel.yaml")
+TEMPLATE_ALARM_YAML = pathlib.Path("config/templates/safe_alarm.yaml")
 HOME_ALARM_ENTITY_ID = "alarm_control_panel.home_alarm"
 TEMPLATE_ALARM_ENTITY_ID = "alarm_control_panel.safe_alarm"
 
@@ -29,6 +30,13 @@ async def mock_template(hass: HomeAssistant) -> None:
         config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "alarm_control_panel", config)
+
+    with TEMPLATE_ALARM_YAML.open("r") as fd:
+        content = fd.read()
+        content = content.replace("!secret alarm_code", SECRET_CODE)
+        template_config = yaml.load(content, Loader=yaml.Loader)
+
+    assert await async_setup_component(hass, "template", {"template": template_config})
     await hass.async_block_till_done()
 
 

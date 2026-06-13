@@ -101,6 +101,7 @@ MOBILE_APP_CONFIG_ENTRY_DATA = {
     "model": "Pixel 6",
     "device_name": "Pixel",
     "os_version": "",
+    "user_id": "mock-user-id",
 }
 
 
@@ -108,7 +109,9 @@ MOBILE_APP_CONFIG_ENTRY_DATA = {
 def cleanup_media_storage(hass: HomeAssistant) -> Generator[None]:
     """Test cleanup, remove any media storage persisted during the test."""
     tmp_path = str(uuid.uuid4())
-    with patch("homeassistant.components.nest.media_source.MEDIA_PATH", new=tmp_path):
+    import homeassistant.components.nest.media_source as nest_media_source
+    target = "MEDIA_CACHE_PATH" if hasattr(nest_media_source, "MEDIA_CACHE_PATH") else "MEDIA_PATH"
+    with patch(f"homeassistant.components.nest.media_source.{target}", new=tmp_path):
         yield
         shutil.rmtree(hass.config.path(tmp_path), ignore_errors=True)
 

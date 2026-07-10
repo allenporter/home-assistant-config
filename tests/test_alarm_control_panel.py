@@ -72,7 +72,7 @@ async def test_manual_alarm_control_panel(
     assert state.state == "armed_home"
 
     # Attempt to disarm the alarm with the wrong code
-    with pytest.raises(HomeAssistantError, match="Invalid alarm code"):
+    with pytest.raises(HomeAssistantError, match="invalid_code"):
         await hass.services.async_call(
             "alarm_control_panel",
             "alarm_disarm",
@@ -81,7 +81,7 @@ async def test_manual_alarm_control_panel(
             target={"entity_id": HOME_ALARM_ENTITY_ID},
         )
 
-    with pytest.raises(HomeAssistantError, match="Invalid alarm code"):
+    with pytest.raises(HomeAssistantError, match="invalid_code"):
         await hass.services.async_call(
             "alarm_control_panel",
             "alarm_disarm",
@@ -90,7 +90,7 @@ async def test_manual_alarm_control_panel(
             target={"entity_id": HOME_ALARM_ENTITY_ID},
         )
 
-    with pytest.raises(HomeAssistantError, match="Invalid alarm code"):
+    with pytest.raises(HomeAssistantError, match="invalid_code"):
         await hass.services.async_call(
             "alarm_control_panel",
             "alarm_disarm",

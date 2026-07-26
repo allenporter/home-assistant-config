@@ -8,7 +8,7 @@ repos:
         args:
           - --allow-multiple-documents
         # Can't handle home assistant constructors
-        exclude: ^config/blueprints/automation/allenporter/.*|config/alarm_control_panel.yaml$
+        exclude: ^config/blueprints/.*|config/templates/safe_alarm.yaml|config/alarm_control_panel.yaml$
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -30,7 +30,7 @@ repos:
     hooks:
       - id: codespell
         args:
-          - --ignore-words-list=hass,iff
+          - --ignore-words-list=hass,iif
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.38.0
     hooks:

@@ -1,4 +1,3 @@
----
 name: Lint
 
 on:
@@ -20,9 +19,35 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v7
-      - uses: chartboost/ruff-action@v1.0.0
-      - uses: codespell-project/actions-codespell@v2.2
+      - uses: actions/checkout@v4
+      - name: Validate Renovate configuration
+        run: |
+          npx --package=renovate@38 -- renovate-config-validator .github/renovate.json5
+
+      - uses: codespell-project/actions-codespell@v2.4.3
         with:
           check_hidden: false
-          ignore_words_list: hass,iif
+          ignore_words_list: hass,iff
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "requirements_dev.txt"
+          activate-environment: true
+      - name: Install dependencies
+        env:
+          PYO3_USE_ABI3_FORWARD_COMPATIBILITY: 1
+        run: |
+          uv pip install -r requirements_dev.txt --prerelease=allow
+
+      - name: Run Ruff Check
+        run: |
+          ruff check --output-format=github .
+
+      - name: Run Ruff Format
+        run: |
+          ruff format .
+
+      - name: Static typing with ty
+        run: |
+          ty check . --ignore unresolved-import

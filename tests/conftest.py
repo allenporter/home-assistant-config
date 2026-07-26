@@ -1,5 +1,6 @@
 """Test fixtures for configuration."""
 
+from collections.abc import Generator
 import logging
 import pathlib
 from unittest.mock import patch
@@ -20,13 +21,16 @@ pytest_plugins = [
 
 
 @pytest.fixture(autouse=True)
-def mock_config_dir() -> None:
-    with patch(
-        "pytest_homeassistant_custom_component.common.get_test_config_dir",
-        return_value=CONFIG_DIR,
-    ), patch(
-        "pytest_homeassistant_custom_component.plugins.get_test_config_dir",
-        return_value=CONFIG_DIR,
+def mock_config_dir() -> Generator[None, None, None]:
+    with (
+        patch(
+            "pytest_homeassistant_custom_component.common.get_test_config_dir",
+            return_value=CONFIG_DIR,
+        ),
+        patch(
+            "pytest_homeassistant_custom_component.plugins.get_test_config_dir",
+            return_value=CONFIG_DIR,
+        ),
     ):
         yield
 

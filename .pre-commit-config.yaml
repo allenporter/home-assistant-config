@@ -8,29 +8,36 @@ repos:
         args:
           - --allow-multiple-documents
         # Can't handle home assistant constructors
-        exclude: ^config/blueprints/automation/allenporter/.*|config/alarm_control_panel.yaml$
+        exclude: ^config/.*
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.22
+  - repo: local
     hooks:
       - id: ruff-check
+        name: ruff check
+        entry: uv run --no-project ruff check --fix --exit-non-zero-on-fix
+        language: system
         types_or:
           - python
           - pyi
-        args:
-          - --fix
-          - --exit-non-zero-on-fix
       - id: ruff-format
+        name: ruff format
+        entry: uv run --no-project ruff format
+        language: system
         types_or:
           - python
           - pyi
+      - id: ty
+        name: ty check
+        entry: uv run --no-project ty check . --ignore unresolved-import
+        language: system
+        pass_filenames: false
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.3
     hooks:
       - id: codespell
         args:
-          - --ignore-words-list=hass,iff
+          - --ignore-words-list=hass,iff,iif
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.38.0
     hooks:

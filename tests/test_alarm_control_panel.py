@@ -1,14 +1,13 @@
 """Tests for the alarm control panel configuration."""
 
-import pathlib
 import logging
+import pathlib
 from typing import Any
 
 import pytest
 import yaml
-
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.setup import async_setup_component
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,17 +23,15 @@ TEMPLATE_ALARM_ENTITY_ID = "alarm_control_panel.safe_alarm"
 
 @pytest.fixture(name="alarm_control_panel")
 async def mock_template(hass: HomeAssistant) -> None:
-    with ALARM_CONTROL_PANEL_YAML.open("r") as fd:
-        content = fd.read()
-        content = content.replace("!secret alarm_code", SECRET_CODE)
-        config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(ALARM_CONTROL_PANEL_YAML.read_text)
+    content = content.replace("!secret alarm_code", SECRET_CODE)
+    config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "alarm_control_panel", config)
 
-    with TEMPLATE_ALARM_YAML.open("r") as fd:
-        content = fd.read()
-        content = content.replace("!secret alarm_code", SECRET_CODE)
-        template_config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(TEMPLATE_ALARM_YAML.read_text)
+    content = content.replace("!secret alarm_code", SECRET_CODE)
+    template_config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "template", {"template": template_config})
     await hass.async_block_till_done()

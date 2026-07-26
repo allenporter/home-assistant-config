@@ -9,5 +9,3 @@ alarm_control_panel:
     armed_home:
       arming_time: 0
       delay_time: 30
-
-

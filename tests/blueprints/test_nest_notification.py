@@ -1,48 +1,44 @@
 """Tests for the nest notification automations."""
 
-import uuid
-import shutil
-from asyncio import AbstractEventLoop
-import pathlib
-import logging
-import datetime
 import copy
+import datetime
+import logging
+import pathlib
 import re
+import shutil
+import uuid
+from asyncio import AbstractEventLoop
+from collections.abc import Generator, Mapping
 from typing import Any
-from collections.abc import Mapping, Generator
-from unittest.mock import patch, AsyncMock
+from unittest.mock import AsyncMock, patch
 
-import pytest
-import yaml
 import aiohttp
 import aiohttp.web
-from yarl import URL
-
+import pytest
+import yaml
 from google_nest_sdm.event import EventType
+from google_nest_sdm.streaming_manager import Message, StreamingManager
 from google_nest_sdm.traits import TraitType
-from google_nest_sdm.streaming_manager import StreamingManager, Message
-
-from homeassistant.core import HomeAssistant, Event, ServiceCall
-from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
 from homeassistant.components.application_credentials import (
-    async_import_client_credential,
     ClientCredential,
+    async_import_client_credential,
 )
 from homeassistant.components.nest.const import API_URL
-from homeassistant.util.dt import utcnow
+from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import Event, HomeAssistant, ServiceCall
 from homeassistant.helpers import device_registry as dr
-
-from pytest_homeassistant_custom_component.test_util.aiohttp import (
-    AiohttpClientMocker,
-    AiohttpClientMockResponse,
-)
+from homeassistant.setup import async_setup_component
+from homeassistant.util.dt import utcnow
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_mock_service,
 )
+from pytest_homeassistant_custom_component.test_util.aiohttp import (
+    AiohttpClientMocker,
+    AiohttpClientMockResponse,
+)
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
-
+from yarl import URL
 
 _LOGGER = logging.getLogger(__name__)
 

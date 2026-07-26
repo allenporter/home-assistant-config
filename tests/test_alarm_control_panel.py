@@ -1,14 +1,13 @@
 """Tests for the alarm control panel configuration."""
 
-import pathlib
 import logging
+import pathlib
 from typing import Any
 
 import pytest
 import yaml
-
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.setup import async_setup_component
 
 _LOGGER = logging.getLogger(__name__)

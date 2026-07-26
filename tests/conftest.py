@@ -1,15 +1,13 @@
 """Test fixtures for configuration."""
 
-from collections.abc import Generator
 import logging
 import pathlib
+from collections.abc import Generator
 from unittest.mock import patch
 
 import pytest
-
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,7 +19,7 @@ pytest_plugins = [
 
 
 @pytest.fixture(autouse=True)
-def mock_config_dir() -> Generator[None, None, None]:
+def mock_config_dir() -> Generator[None]:
     with (
         patch(
             "pytest_homeassistant_custom_component.common.get_test_config_dir",

@@ -1,18 +1,16 @@
 """Tests for the calendar location template."""
 
 import datetime
-import pathlib
 import logging
+import pathlib
 from typing import Any
 
 import pytest
 import yaml
 from freezegun import freeze_time
-
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt as dt_util
-
 from pytest_homeassistant_custom_component.common import (
     async_fire_time_changed,
 )
@@ -25,9 +23,8 @@ CALENDAR_LOCATION_YAML = pathlib.Path("config/templates/calendar_location.yaml")
 @pytest.fixture(name="template")
 async def mock_template(hass: HomeAssistant, calendar: Any) -> None:
     """Mock the template."""
-    with CALENDAR_LOCATION_YAML.open("r") as fd:
-        content = fd.read()
-        config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(CALENDAR_LOCATION_YAML.read_text)
+    config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "template", {"template": config})
     await hass.async_block_till_done()

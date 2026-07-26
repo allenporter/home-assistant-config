@@ -1,15 +1,13 @@
 """Fixtures for setting up a local calendar store."""
 
 import pathlib
-from unittest.mock import patch, Mock
 from collections.abc import Generator
+from unittest.mock import Mock, patch
 
 import pytest
-
-from homeassistant.core import HomeAssistant
-from homeassistant.config_entries import ConfigEntryState
 from homeassistant.components.local_calendar.store import LocalCalendarStore
-
+from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )

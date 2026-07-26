@@ -1,26 +1,24 @@
 """Tests for the conversation agent agenda notifications."""
 
 import datetime
-import pathlib
 import logging
+import pathlib
 from typing import Any
 from unittest.mock import patch
 
 import pytest
-from freezegun import freeze_time
 import yaml
-
-from homeassistant.core import HomeAssistant, ServiceCall
+from freezegun import freeze_time
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
 from homeassistant.const import Platform
-
+from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.setup import async_setup_component
+from homeassistant.util.dt import utcnow
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_fire_time_changed,
     async_mock_service,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -58,21 +56,20 @@ async def mock_template(
     hass: HomeAssistant,
     notify: Any,
 ) -> None:
-    with AUTOMATION_YAML.open("r") as fd:
-        content = fd.read()
-        content = content.replace(
-            "conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42",
-            "conversation_agent: conversation.home_assistant",
-        )
-        content = content.replace(
-            "notify_service: notify.discord",
-            "notify_service: notify.persistent_notification",
-        )
-        content = content.replace(
-            "notify_target: notify.discord", "notify_target: notify.notifier"
-        )
-        print(content)
-        config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(AUTOMATION_YAML.read_text)
+    content = content.replace(
+        "conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42",
+        "conversation_agent: conversation.home_assistant",
+    )
+    content = content.replace(
+        "notify_service: notify.discord",
+        "notify_service: notify.persistent_notification",
+    )
+    content = content.replace(
+        "notify_target: notify.discord", "notify_target: notify.notifier"
+    )
+    print(content)
+    config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "automation", {"automation": config})
     await hass.async_block_till_done()
@@ -101,7 +98,7 @@ async def test_notify_agenda(
     assert state.state == "on"
 
     # Automation is triggered daily
-    next = datetime.datetime.now() + datetime.timedelta(hours=24)
+    next = utcnow() + datetime.timedelta(hours=24)
     with freeze_time(next):
         async_fire_time_changed(hass, next)
         await hass.async_block_till_done()

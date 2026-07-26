@@ -1,25 +1,23 @@
 """Tests for the weather forecast templates."""
 
 import datetime
-import pathlib
 import logging
+import pathlib
 from typing import Any
 from unittest.mock import patch
 
-from freezegun import freeze_time
 import pytest
 import yaml
-
-from homeassistant.core import HomeAssistant
+from freezegun import freeze_time
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
 from homeassistant.const import Platform
-
+from homeassistant.core import HomeAssistant
+from homeassistant.setup import async_setup_component
+from homeassistant.util.dt import utcnow
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_fire_time_changed,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,10 +40,9 @@ async def mock_weather_demo(hass: HomeAssistant) -> MockConfigEntry:
 
 @pytest.fixture(name="template")
 async def mock_template(hass: HomeAssistant) -> None:
-    with WEATHER_FORECAST_YAML.open("r") as fd:
-        content = fd.read()
-        content = content.replace("weather.woodgreen", "weather.demo_weather_north")
-        config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(WEATHER_FORECAST_YAML.read_text)
+    content = content.replace("weather.woodgreen", "weather.demo_weather_north")
+    config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "template", {"template": config})
     await hass.async_block_till_done()
@@ -64,7 +61,7 @@ async def test_weather_forecast_template(
     await hass.async_block_till_done()
 
     # Advance past the trigger time
-    next = datetime.datetime.now() + datetime.timedelta(hours=1)
+    next = utcnow() + datetime.timedelta(hours=1)
     with freeze_time(next):
         async_fire_time_changed(hass, next)
         await hass.async_block_till_done()

@@ -5,10 +5,8 @@ import pathlib
 from unittest.mock import patch
 
 import pytest
-
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,12 +19,15 @@ pytest_plugins = [
 
 @pytest.fixture(autouse=True)
 def mock_config_dir() -> None:
-    with patch(
-        "pytest_homeassistant_custom_component.common.get_test_config_dir",
-        return_value=CONFIG_DIR,
-    ), patch(
-        "pytest_homeassistant_custom_component.plugins.get_test_config_dir",
-        return_value=CONFIG_DIR,
+    with (
+        patch(
+            "pytest_homeassistant_custom_component.common.get_test_config_dir",
+            return_value=CONFIG_DIR,
+        ),
+        patch(
+            "pytest_homeassistant_custom_component.plugins.get_test_config_dir",
+            return_value=CONFIG_DIR,
+        ),
     ):
         yield
 

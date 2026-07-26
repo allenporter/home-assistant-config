@@ -1,23 +1,20 @@
 """Tests for the weather intent scripts."""
 
-import pathlib
 import logging
+import pathlib
 from typing import Any
 from unittest.mock import patch
 
 import pytest
 import yaml
-
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
 from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import intent
-
+from homeassistant.setup import async_setup_component
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,10 +38,9 @@ async def mock_weather_demo(hass: HomeAssistant) -> MockConfigEntry:
 
 @pytest.fixture(name="script")
 async def mock_script(hass: HomeAssistant) -> None:
-    with SCRIPT_YAML.open("r") as fd:
-        content = fd.read()
-        content = content.replace("weather.woodgreen", TEST_WEATHER_ENTITY)
-        config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(SCRIPT_YAML.read_text)
+    content = content.replace("weather.woodgreen", TEST_WEATHER_ENTITY)
+    config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "intent_script", {"intent_script": config})
     await hass.async_block_till_done()

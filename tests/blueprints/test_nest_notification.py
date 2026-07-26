@@ -1,47 +1,43 @@
 """Tests for the nest notification automations."""
 
-import uuid
-import shutil
-from asyncio import AbstractEventLoop
-import pathlib
-import logging
-import datetime
 import copy
+import datetime
+import logging
+import pathlib
 import re
+import shutil
+import uuid
+from asyncio import AbstractEventLoop
+from collections.abc import Generator, Mapping
 from typing import Any
-from collections.abc import Mapping, Generator
-from unittest.mock import patch, AsyncMock
+from unittest.mock import AsyncMock, patch
 
+import aiohttp
 import pytest
 import yaml
-import aiohttp
-from yarl import URL
-
 from google_nest_sdm.event import EventType
+from google_nest_sdm.streaming_manager import Message, StreamingManager
 from google_nest_sdm.traits import TraitType
-from google_nest_sdm.streaming_manager import StreamingManager, Message
-
-from homeassistant.core import HomeAssistant, Event, ServiceCall
-from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
 from homeassistant.components.application_credentials import (
-    async_import_client_credential,
     ClientCredential,
+    async_import_client_credential,
 )
 from homeassistant.components.nest.const import API_URL
-from homeassistant.util.dt import utcnow
+from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import Event, HomeAssistant, ServiceCall
 from homeassistant.helpers import device_registry as dr
-
-from pytest_homeassistant_custom_component.test_util.aiohttp import (
-    AiohttpClientMocker,
-    AiohttpClientMockResponse,
-)
+from homeassistant.setup import async_setup_component
+from homeassistant.util.dt import utcnow
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_mock_service,
 )
+from pytest_homeassistant_custom_component.test_util.aiohttp import (
+    AiohttpClientMocker,
+    AiohttpClientMockResponse,
+)
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
-
+from yarl import URL
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,7 +65,7 @@ NEST_CONFIG_ENTRY_DATA = {
     "token": {
         "access_token": "some-token",
         "expires_at": (
-            datetime.datetime.now() + datetime.timedelta(days=7)
+            datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=7)
         ).timestamp(),
     },
 }
@@ -110,7 +106,12 @@ def cleanup_media_storage(hass: HomeAssistant) -> Generator[None]:
     """Test cleanup, remove any media storage persisted during the test."""
     tmp_path = str(uuid.uuid4())
     import homeassistant.components.nest.media_source as nest_media_source
-    target = "MEDIA_CACHE_PATH" if hasattr(nest_media_source, "MEDIA_CACHE_PATH") else "MEDIA_PATH"
+
+    target = (
+        "MEDIA_CACHE_PATH"
+        if hasattr(nest_media_source, "MEDIA_CACHE_PATH")
+        else "MEDIA_PATH"
+    )
     with patch(f"homeassistant.components.nest.media_source.{target}", new=tmp_path):
         yield
         shutil.rmtree(hass.config.path(tmp_path), ignore_errors=True)
@@ -359,12 +360,11 @@ async def mock_template(
     )
     assert mobile_device_entry
 
-    with AUTOMATION_YAML.open("r") as fd:
-        content = fd.read()
-        content = content.replace("NEST_EVENT_ENTITY_ID", "event.front_door_chime")
-        content = content.replace("NEST_DEVICE_ID", nest_device_entry.id)
-        content = content.replace("MOBILE_APP_DEVICE_ID", mobile_device_entry.id)
-        config = yaml.load(content, Loader=yaml.Loader)
+    content = await hass.async_add_executor_job(AUTOMATION_YAML.read_text)
+    content = content.replace("NEST_EVENT_ENTITY_ID", "event.front_door_chime")
+    content = content.replace("NEST_DEVICE_ID", nest_device_entry.id)
+    content = content.replace("MOBILE_APP_DEVICE_ID", mobile_device_entry.id)
+    config = yaml.load(content, Loader=yaml.Loader)
 
     assert await async_setup_component(hass, "automation", {"automation": config})
     await hass.async_block_till_done()
@@ -397,7 +397,7 @@ async def test_nest_notification(
     assert state.state == "on"
     assert state.attributes.get("last_triggered") is None
 
-    now = datetime.datetime.now() + datetime.timedelta(hours=24)
+    now = utcnow() + datetime.timedelta(hours=24)
     iso_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     aioclient_mock.post(
         PUSH_URL,

@@ -1,0 +1,19 @@
+{
+  "template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component",
+  "commit": "a2a1f2b89a21ec261ba5627d075b91e8392c9111",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Allen Porter",
+      "email": "allen.porter@gmail.com",
+      "github_username": "allenporter",
+      "project_name": "home-assistant-config",
+      "domain": "ha_config",
+      "name": "Home Assistant Config",
+      "description": "Project short description.",
+      "version": "0.0.1",
+      "_template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component"
+    }
+  },
+  "directory": null
+}

@@ -1,4 +1,4 @@
-"""Tests for the weather forecast templates."""
+"""Tests for the weather forecast configuration."""
 
 import datetime
 import pathlib
@@ -57,7 +57,7 @@ async def test_weather_forecast_template(
     hass: HomeAssistant,
     weather: Any,
     template: Any,
-    error_caplog: pytest.CaptureFixture,
+    error_caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Exercise the weather summary."""
     assert await async_setup_component(hass, "sun", {})

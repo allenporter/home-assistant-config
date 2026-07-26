@@ -1,7 +1,14 @@
+.mypy_cache/
+.ruff_cache/
+.venv/
 *.pyc
 venv
 *.egg-info
+deps
+ls
 __pycache__
+.coverage
+config/.cache/
+config/blueprints/template/
 
 **/secrets.yaml
-deps

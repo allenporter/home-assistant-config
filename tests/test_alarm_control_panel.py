@@ -43,7 +43,7 @@ async def mock_template(hass: HomeAssistant) -> None:
 async def test_manual_alarm_control_panel(
     hass: HomeAssistant,
     alarm_control_panel: Any,
-    error_caplog: pytest.CaptureFixture,
+    error_caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Exercise the alarm control panel."""
 
@@ -123,7 +123,7 @@ async def test_manual_alarm_control_panel(
 async def test_template_control_panel(
     hass: HomeAssistant,
     alarm_control_panel: Any,
-    error_caplog: pytest.CaptureFixture,
+    error_caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Exercise the template control panel can control the underlying alarm."""
 

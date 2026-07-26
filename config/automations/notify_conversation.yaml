@@ -1,12 +1,10 @@
----
-  id: "1730061439207"
+- id: "1730061439207"
   alias: Conversation agent intent based agenda Notification
   description: ""
   use_blueprint:
     path: allenporter/notify_conversation.yaml
     input:
       notify_service: notify.discord
-      notify_target:
       conversation_agent: 2ee2edd1e9dbee5de7474922ce3cee42
       prompt: "User: Allen
 

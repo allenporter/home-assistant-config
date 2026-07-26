@@ -15,6 +15,7 @@ from unittest.mock import patch, AsyncMock
 import pytest
 import yaml
 import aiohttp
+import aiohttp.web
 from yarl import URL
 
 from google_nest_sdm.event import EventType
@@ -110,7 +111,12 @@ def cleanup_media_storage(hass: HomeAssistant) -> Generator[None]:
     """Test cleanup, remove any media storage persisted during the test."""
     tmp_path = str(uuid.uuid4())
     import homeassistant.components.nest.media_source as nest_media_source
-    target = "MEDIA_CACHE_PATH" if hasattr(nest_media_source, "MEDIA_CACHE_PATH") else "MEDIA_PATH"
+
+    target = (
+        "MEDIA_CACHE_PATH"
+        if hasattr(nest_media_source, "MEDIA_CACHE_PATH")
+        else "MEDIA_PATH"
+    )
     with patch(f"homeassistant.components.nest.media_source.{target}", new=tmp_path):
         yield
         shutil.rmtree(hass.config.path(tmp_path), ignore_errors=True)
@@ -220,7 +226,7 @@ class FakeAuth:
         self._aioclient_mock.get(TEST_CLIP_URL, side_effect=self.request)
 
     async def request_structures(
-        self, method: str, url: str, data: dict[str, Any]
+        self, method: str, url: URL, data: dict[str, Any]
     ) -> AiohttpClientMockResponse:
         """Handle requests to create devices."""
         return AiohttpClientMockResponse(
@@ -228,7 +234,7 @@ class FakeAuth:
         )
 
     async def request_devices(
-        self, method: str, url: str, data: dict[str, Any]
+        self, method: str, url: URL, data: dict[str, Any]
     ) -> AiohttpClientMockResponse:
         """Handle requests to create devices."""
         return AiohttpClientMockResponse(

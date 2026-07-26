@@ -108,12 +108,13 @@ async def test_notify_agenda(
 
     assert len(notify_service_calls) == 1
     data = notify_service_calls[0].data
-    assert "Agenda" in data.get("title")
+    assert (title := data.get("title")) is not None and "Agenda" in title
 
     # We're using the default agent for testing
-    assert "couldn't understand that" in data.get(
-        "message"
-    ) or "Sorry, I am not aware" in data.get("message")
+    msg = data.get("message")
+    assert msg is not None and (
+        "couldn't understand that" in msg or "Sorry, I am not aware" in msg
+    )
 
     # Automation completes with success
     assert not error_caplog.records

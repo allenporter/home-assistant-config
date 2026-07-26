@@ -27,7 +27,7 @@ jobs:
       - uses: codespell-project/actions-codespell@v2.0
         with:
           check_hidden: false
-          ignore_words_list: hass,iff
+          ignore_words_list: hass,iff,iif
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:

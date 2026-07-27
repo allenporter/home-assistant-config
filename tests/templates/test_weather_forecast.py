@@ -1,25 +1,22 @@
 """Tests for the weather forecast configuration."""
 
 import datetime
-import pathlib
 import logging
+import pathlib
 from typing import Any
 from unittest.mock import patch
 
-from freezegun import freeze_time
 import pytest
 import yaml
-
-from homeassistant.core import HomeAssistant
+from freezegun import freeze_time
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
 from homeassistant.const import Platform
-
+from homeassistant.core import HomeAssistant
+from homeassistant.setup import async_setup_component
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
     async_fire_time_changed,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 

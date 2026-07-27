@@ -1,23 +1,20 @@
 """Tests for the weather intent scripts."""
 
 import datetime
-import pathlib
 import logging
+import pathlib
 from typing import Any
 
 import pytest
 import yaml
-
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.setup import async_setup_component
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import intent
+from homeassistant.setup import async_setup_component
 from homeassistant.util import dt as dt_util
-
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )
-
 
 _LOGGER = logging.getLogger(__name__)
 

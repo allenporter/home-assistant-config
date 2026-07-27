@@ -1,0 +1,6 @@
+[lint]
+extend-ignore = [
+    "RUF022",
+    "ASYNC230",
+    "DTZ005",
+]

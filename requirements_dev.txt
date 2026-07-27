@@ -5,6 +5,7 @@ hassil
 home_assistant_intents
 ical
 mutagen
+pymicro_vad
 mashumaro==3.22
 pre-commit==4.6.1
 ruff==0.16.0

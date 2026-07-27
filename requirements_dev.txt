@@ -1,7 +1,6 @@
+google-nest-sdm
 mashumaro==3.22
 pre-commit==4.6.1
 ruff==0.16.0
 ty==0.0.63
 pytest-homeassistant-custom-component==0.13.348
-
-# Don't hard pin dependencies of pytest-homeassistant-custom-component

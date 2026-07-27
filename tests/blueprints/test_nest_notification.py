@@ -127,7 +127,7 @@ class CreateDevice:
 
     def __init__(self) -> None:
         """Initialize CreateDevice."""
-        self.data = {"traits": {}}
+        self.data: dict[str, Any] = {"traits": {}}
         self.devices = []
 
     def create(

@@ -11,4 +11,4 @@ mashumaro==3.22
 pre-commit==4.6.1
 ruff==0.16.1
 ty==0.0.66
-pytest-homeassistant-custom-component==0.13.352
+pytest-homeassistant-custom-component==0.13.353

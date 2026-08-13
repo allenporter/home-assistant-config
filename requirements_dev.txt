@@ -9,6 +9,6 @@ pymicro_vad
 pyspeex_noise
 mashumaro==3.22
 pre-commit==4.6.2
-ruff==0.16.2
+ruff==0.16.3
 ty==0.0.71
 pytest-homeassistant-custom-component==0.13.355

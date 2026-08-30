@@ -1,3 +1,4 @@
+gazetteer-matcher
 google-nest-sdm
 pyturbojpeg
 ha-ffmpeg

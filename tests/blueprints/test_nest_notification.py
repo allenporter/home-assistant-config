@@ -352,12 +352,14 @@ async def mock_template(
     nest: MockConfigEntry,
     mobile_app: MockConfigEntry,
 ) -> None:
-    nest_device_entry = device_registry.async_get_device(
-        identifiers={("nest", NEST_DEVICE_NAME)}
+    nest_device_entry = device_registry.async_get_device_by_identifier(
+        identifier=("nest", NEST_DEVICE_NAME),
+        config_entry_id=nest.entry_id,
     )
     assert nest_device_entry
-    mobile_device_entry = device_registry.async_get_device(
-        identifiers={("mobile_app", MOBILE_APP_DEVICE_ID)}
+    mobile_device_entry = device_registry.async_get_device_by_identifier(
+        identifier=("mobile_app", MOBILE_APP_DEVICE_ID),
+        config_entry_id=mobile_app.entry_id,
     )
     assert mobile_device_entry
 

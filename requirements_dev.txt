@@ -11,5 +11,5 @@ pyspeex_noise
 mashumaro==3.22
 pre-commit==4.6.2
 ruff==0.16.9
-ty==0.0.83
+ty==0.0.84
 pytest-homeassistant-custom-component==0.13.366

@@ -1,7 +1,7 @@
 """Tests for the nest notification automations."""
 
 import copy
-import datetime
+import datetime as dt
 import logging
 import pathlib
 import re
@@ -23,6 +23,7 @@ from homeassistant.components.application_credentials import (
     ClientCredential,
     async_import_client_credential,
 )
+from homeassistant.components.nest import media_source as nest_media_source
 from homeassistant.components.nest.const import API_URL
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import Event, HomeAssistant, ServiceCall
@@ -65,9 +66,7 @@ NEST_CONFIG_ENTRY_DATA = {
     "auth_implementation": "imported-cred",
     "token": {
         "access_token": "some-token",
-        "expires_at": (
-            datetime.datetime.now() + datetime.timedelta(days=7)
-        ).timestamp(),
+        "expires_at": (dt.datetime.now() + dt.timedelta(days=7)).timestamp(),
     },
 }
 DEVICE_URL_MATCH = re.compile(
@@ -106,8 +105,6 @@ MOBILE_APP_CONFIG_ENTRY_DATA = {
 def cleanup_media_storage(hass: HomeAssistant) -> Generator[None]:
     """Test cleanup, remove any media storage persisted during the test."""
     tmp_path = str(uuid.uuid4())
-    import homeassistant.components.nest.media_source as nest_media_source
-
     target = (
         "MEDIA_CACHE_PATH"
         if hasattr(nest_media_source, "MEDIA_CACHE_PATH")
@@ -401,7 +398,7 @@ async def test_nest_notification(
     assert state.state == "on"
     assert state.attributes.get("last_triggered") is None
 
-    now = datetime.datetime.now() + datetime.timedelta(hours=24)
+    now = dt.datetime.now() + dt.timedelta(hours=24)
     iso_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     aioclient_mock.post(
         PUSH_URL,

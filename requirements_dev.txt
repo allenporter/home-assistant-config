@@ -9,7 +9,7 @@ mutagen
 pymicro_vad
 pyspeex_noise
 mashumaro==3.23
-pre-commit==4.6.2
+pre-commit==4.7.0
 ruff==0.17.0
 ty==0.0.87
 pytest-homeassistant-custom-component==0.13.372

@@ -1,6 +1,6 @@
 """Tests for the conversation agent agenda notifications."""
 
-import datetime
+import datetime as dt
 import logging
 import pathlib
 from typing import Any
@@ -98,7 +98,7 @@ async def test_notify_agenda(
     assert state.state == "on"
 
     # Automation is triggered daily
-    next = datetime.datetime.now() + datetime.timedelta(hours=24)
+    next = dt.datetime.now() + dt.timedelta(hours=24)
     with freeze_time(next):
         async_fire_time_changed(hass, next)
         await hass.async_block_till_done()

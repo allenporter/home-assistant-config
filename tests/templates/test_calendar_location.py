@@ -1,6 +1,6 @@
 """Tests for the calendar location template."""
 
-import datetime
+import datetime as dt
 import logging
 import pathlib
 from typing import Any
@@ -42,8 +42,8 @@ async def test_calendar_location_template(
 
     # Create an event
     now = dt_util.now()
-    start = now + datetime.timedelta(hours=7)
-    end = start + datetime.timedelta(hours=1)
+    start = now + dt.timedelta(hours=7)
+    end = start + dt.timedelta(hours=1)
 
     await hass.services.async_call(
         "calendar",
@@ -59,7 +59,7 @@ async def test_calendar_location_template(
     )
 
     # Trigger the template update via time pattern
-    next_run = now + datetime.timedelta(hours=6)
+    next_run = now + dt.timedelta(hours=6)
     with freeze_time(next_run):
         async_fire_time_changed(hass, next_run)
         await hass.async_block_till_done()

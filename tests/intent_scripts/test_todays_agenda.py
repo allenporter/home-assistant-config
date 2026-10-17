@@ -1,6 +1,6 @@
 """Tests for the weather intent scripts."""
 
-import datetime
+import datetime as dt
 import logging
 import pathlib
 from typing import Any
@@ -64,8 +64,8 @@ async def test_upcoming_events(
 ) -> None:
     """Exercise the calendar event summary with an upcoming event."""
 
-    start_time = dt_util.now() + datetime.timedelta(hours=1)
-    end_time = start_time + datetime.timedelta(minutes=30)
+    start_time = dt_util.now() + dt.timedelta(hours=1)
+    end_time = start_time + dt.timedelta(minutes=30)
 
     await hass.services.async_call(
         "calendar",
@@ -81,8 +81,8 @@ async def test_upcoming_events(
     )
     await hass.async_block_till_done()
 
-    start_time += datetime.timedelta(hours=1)
-    end_time = start_time + datetime.timedelta(minutes=15)
+    start_time += dt.timedelta(hours=1)
+    end_time = start_time + dt.timedelta(minutes=15)
 
     await hass.services.async_call(
         "calendar",
@@ -120,15 +120,15 @@ async def test_event_starting_now(
     """Test an event that starts at the same time as the script is run."""
 
     today = dt_util.now().date()
-    start_time = dt_util.now() - datetime.timedelta(seconds=1)
-    end_time = start_time + datetime.timedelta(minutes=30)
+    start_time = dt_util.now() - dt.timedelta(seconds=1)
+    end_time = start_time + dt.timedelta(minutes=30)
 
     await hass.services.async_call(
         "calendar",
         "create_event",
         {
             "start_date": today.isoformat(),
-            "end_date": (today + datetime.timedelta(days=1)).isoformat(),
+            "end_date": (today + dt.timedelta(days=1)).isoformat(),
             "summary": "Bastille Day",
         },
         target={"entity_id": CALENDAR_ENTITY},
